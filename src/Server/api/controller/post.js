@@ -8,6 +8,9 @@ export default (req, res) => {
 		case 'closeWindow':
 			EventBus.emit('CLOSE_WINDOW');
 			break;
+		case 'openWindow':
+			EventBus.emit('OPEN_WINDOW');
+			break;
 		case 'lowTmp':
 			EventBus.emit(EVENTS.TEMPERATURE.LOW_LEVEL);
 			break;

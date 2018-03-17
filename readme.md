@@ -7,22 +7,14 @@ body:
 ```
 where action can be:
 
-`closeWindow`
-
-`lowTmp`
-
-`highTmp`
-
-`normalTmp`
-
-`lowCO2`
-
-`highCO2`
-
-`normalCO2`
-
-`lowLight`
-
-`highLight`
-
-`normalLight`
+* `closeWindow`
+* `openWindow`
+* `lowTmp`
+* `highTmp`
+* `normalTmp`
+* `lowCO2`
+* `highCO2`
+* `normalCO2`
+* `lowLight`
+* `highLight`
+* `normalLight`
