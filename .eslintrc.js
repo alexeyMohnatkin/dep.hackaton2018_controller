@@ -6,5 +6,6 @@ module.exports = {
 		'indent': ['error', 'tab'],
 		'max-len': ['error', 120],
 		semi: ["error", "always"],
+		'class-methods-use-this': 0,
 	}
 };

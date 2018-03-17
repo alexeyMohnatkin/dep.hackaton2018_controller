@@ -1,29 +1,38 @@
-// import five from 'johnny-five';
+import five from 'johnny-five';
 import fetch from 'node-fetch';
 
+import CO2 from './Modules/CO2';
+import EventBus from './EventBus';
 
-// console.log('initializing...');
-// const board = new five.Board();
+import * as CO2_EVENTS from './Modules/CO2/events';
 
-// board.on('ready', () => {
-// 	console.log('ready');
-// });
+console.log('initializing...');
+const board = new five.Board();
 
-const getRandomValue = (min, max) => parseInt((Math.random() * (max - min)) + min, 10);
-const generateData = () => {
-	const tmp = getRandomValue(20, 25);
-	const co2 = getRandomValue(600, 650);
-	const light = getRandomValue(300, 320);
 
-	return {
-		tmp,
-		co2,
-		light,
-	};
+const STATE = {
+	tmp: 0,
+	co2: 0,
+	light: 0,
 };
 
+const handleChangeCo2 = (value) => {
+	console.log(`co2: ${value} ppm`);
+	STATE.co2 = value;
+};
+
+
+board.on('ready', () => {
+	console.log('ready');
+
+	const CO2sensor = new CO2();
+
+	EventBus.on(CO2_EVENTS.VALUE_CHANGED, handleChangeCo2);
+});
+
+
 const senData = async () => {
-	const data = generateData();
+	const data = STATE;
 	try {
 		const res = await fetch('http://10.66.170.54:8000/controller', {
 			method: 'post',
@@ -36,4 +45,4 @@ const senData = async () => {
 		console.error(error);
 	}
 };
-setInterval(senData, 10000);
+// setInterval(senData, 10000);
