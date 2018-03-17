@@ -36,10 +36,13 @@ const senData = async () => {
 	try {
 		console.log(STATE);
 		const res = await fetch(END_POINT_URL, {
+			headers: {
+				'Content-type': 'application/json',
+			},
 			method: 'post',
-			body: STATE,
+			body: JSON.stringify(STATE),
 		});
-		console.log(res.ok);
+		console.log(`ok: ${res.ok}`);
 		console.log(`server says: ${await res.text()}`);
 	} catch (error) {
 		console.error(error);
