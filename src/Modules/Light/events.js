@@ -1,0 +1,2 @@
+export const VALUE_CHANGED = 'LIGHT/VALUE_CHANGED';
+
