@@ -1,13 +1,17 @@
 import five from 'johnny-five';
 import * as EVENTS from './events';
 import EventBus from '../../EventBus';
-import { FREQUENCY } from '../../constants';
+
+const defaultOptions = {
+	pin: 'A0',
+	freq: 10000,
+};
 
 export default class CO2 {
-	constructor() {
+	constructor(options) {
 		this.sensor = new five.Sensor({
-			pin: 'A2',
-			freq: FREQUENCY,
+			...defaultOptions,
+			...options,
 		});
 		this.init();
 	}
