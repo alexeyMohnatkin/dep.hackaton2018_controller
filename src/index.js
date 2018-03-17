@@ -1,16 +1,16 @@
 import five from 'johnny-five';
 import fetch from 'node-fetch';
 
+import './Server';
+
 import EventBus from './EventBus';
 import CO2 from './Modules/CO2';
 import Light from './Modules/Light';
 import Temperature from './Modules/Temperature';
 
-import * as CO2_EVENTS from './Modules/CO2/events';
-import * as LIGHT_EVENTS from './Modules/Light/events';
-import * as TEMPERATURE_EVENTS from './Modules/Temperature/events';
+import * as EVENTS from './events';
 
-import { END_POINT_URL, FREQUENCY } from './constants';
+import { END_POINT_URL, FREQUENCY, ROOM_ID } from './constants';
 
 console.log('initializing...');
 const board = new five.Board();
@@ -34,15 +34,19 @@ const handleChangeTmp = (value) => {
 
 const senData = async () => {
 	try {
-		console.log(STATE);
+		const body = {
+			...STATE,
+			roomId: ROOM_ID,
+		};
+		console.log(body);
+
 		const res = await fetch(END_POINT_URL, {
 			headers: {
 				'Content-type': 'application/json',
 			},
 			method: 'post',
-			body: JSON.stringify(STATE),
+			body: JSON.stringify(body),
 		});
-		console.log(`ok: ${res.ok}`);
 		console.log(`server says: ${await res.text()}`);
 	} catch (error) {
 		console.error(error);
@@ -66,9 +70,9 @@ board.on('ready', () => {
 		freq: FREQUENCY,
 	});
 
-	EventBus.on(TEMPERATURE_EVENTS.VALUE_CHANGED, handleChangeTmp);
-	EventBus.on(CO2_EVENTS.VALUE_CHANGED, handleChangeCo2);
-	EventBus.on(LIGHT_EVENTS.VALUE_CHANGED, handleChangeLight);
+	EventBus.on(EVENTS.TEMPERATURE.VALUE_CHANGED, handleChangeTmp);
+	EventBus.on(EVENTS.CO2.VALUE_CHANGED, handleChangeCo2);
+	EventBus.on(EVENTS.LIGHT.VALUE_CHANGED, handleChangeLight);
 
 	setInterval(senData, FREQUENCY);
 });
