@@ -15,10 +15,10 @@ class EventBus {
 		this.subscriptions = this.subscriptions.filter(s => s.event !== event && s.subscriber !== subscriber);
 	}
 
-	emit(event) {
+	emit(event, ...params) {
 		const targets = this.subscriptions.filter(subscription => subscription.event === event);
 		targets.forEach((target) => {
-			target.cb(...target.params);
+			target.cb(...params);
 		});
 	}
 }

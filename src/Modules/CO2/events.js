@@ -1,0 +1,2 @@
+export const VALUE_CHANGED = 'CO2/VALUE_CHANGED';
+
