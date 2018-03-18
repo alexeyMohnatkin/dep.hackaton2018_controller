@@ -6,10 +6,10 @@ export default (req, res) => {
 
 	switch (action) {
 		case 'closeWindow':
-			EventBus.emit('CLOSE_WINDOW');
+			EventBus.emit(EVENTS.WINDOW.CLOSE);
 			break;
 		case 'openWindow':
-			EventBus.emit('OPEN_WINDOW');
+			EventBus.emit(EVENTS.WINDOW.OPEN);
 			break;
 		case 'lowTmp':
 			EventBus.emit(EVENTS.TEMPERATURE.LOW_LEVEL);

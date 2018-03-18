@@ -1,12 +1,13 @@
 import five from 'johnny-five';
-import fetch from 'node-fetch';
 
-import './Server';
+import startServer from './Server';
+import post from './post';
 
 import EventBus from './EventBus';
 import CO2 from './Modules/CO2';
 import Light from './Modules/Light';
 import Temperature from './Modules/Temperature';
+import Window from './Modules/Window';
 
 import * as EVENTS from './events';
 
@@ -19,43 +20,25 @@ const STATE = {
 	tmp: 0,
 	co2: 0,
 	light: 0,
+	event: null,
 };
-
-const handleChangeCo2 = (value) => {
-	STATE.co2 = value;
-};
-const handleChangeLight = (value) => {
-	STATE.light = value;
-};
-const handleChangeTmp = (value) => {
-	STATE.tmp = value;
-};
-
 
 const senData = async () => {
-	try {
-		const body = {
-			...STATE,
-			roomId: ROOM_ID,
-		};
-		console.log(body);
+	const body = {
+		...STATE,
+		roomId: ROOM_ID,
+	};
+	console.log(body);
 
-		const res = await fetch(END_POINT_URL, {
-			headers: {
-				'Content-type': 'application/json',
-			},
-			method: 'post',
-			body: JSON.stringify(body),
-		});
-		console.log(`server says: ${await res.text()}`);
-	} catch (error) {
-		console.error(error);
-	}
+	await post(`${END_POINT_URL}/controller`, body);
+	STATE.event = null;
 };
 
 
 board.on('ready', () => {
 	console.log('ready');
+	startServer();
+
 
 	const TemperatureSensor = new Temperature({
 		pin: 'A0',
@@ -69,10 +52,36 @@ board.on('ready', () => {
 		pin: 'A3',
 		freq: FREQUENCY,
 	});
+	const windowServo = new Window({
+		pin: 4,
+	});
+
+	const handleChangeCo2 = (value) => {
+		STATE.co2 = value;
+	};
+	const handleChangeLight = (value) => {
+		STATE.light = value;
+	};
+	const handleChangeTmp = (value) => {
+		STATE.tmp = value;
+	};
+	const handleOpenWindow = async () => {
+		STATE.event = 'WINDOW_OPEN';
+		windowServo.open();
+		post(`${END_POINT_URL}/event/${ROOM_ID}`, 'WINDOW_OPEN');
+	};
+	const handleCloseWindow = async () => {
+		STATE.event = 'WINDOW_CLOSE';
+		windowServo.close();
+		post(`${END_POINT_URL}/event/${ROOM_ID}`, 'WINDOW_CLOSE');
+	};
+
 
 	EventBus.on(EVENTS.TEMPERATURE.VALUE_CHANGED, handleChangeTmp);
 	EventBus.on(EVENTS.CO2.VALUE_CHANGED, handleChangeCo2);
 	EventBus.on(EVENTS.LIGHT.VALUE_CHANGED, handleChangeLight);
+	EventBus.on(EVENTS.WINDOW.OPEN, handleOpenWindow);
+	EventBus.on(EVENTS.WINDOW.CLOSE, handleCloseWindow);
 
 	setInterval(senData, FREQUENCY);
 });
