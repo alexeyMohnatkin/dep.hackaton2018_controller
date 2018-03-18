@@ -26,7 +26,7 @@ export default class Light {
 		const Vin = 5;
 		const Vout = value * (Vin / 1024);
 		const lx = ((2500 / Vout) - 500) / 10;
-		const CORRECTION = 3.3;
+		const CORRECTION = 3;
 
 		return parseInt(lx * CORRECTION, 10);
 	}
