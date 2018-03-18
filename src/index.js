@@ -68,12 +68,12 @@ board.on('ready', () => {
 	const handleOpenWindow = async () => {
 		STATE.event = 'WINDOW_OPEN';
 		windowServo.open();
-		post(`${END_POINT_URL}/event/${ROOM_ID}`, 'WINDOW_OPEN');
+		post(`${END_POINT_URL}/event/${ROOM_ID}`, { event: 'WINDOW_OPEN' });
 	};
 	const handleCloseWindow = async () => {
 		STATE.event = 'WINDOW_CLOSE';
 		windowServo.close();
-		post(`${END_POINT_URL}/event/${ROOM_ID}`, 'WINDOW_CLOSE');
+		post(`${END_POINT_URL}/event/${ROOM_ID}`, { event: 'WINDOW_CLOSE' });
 	};
 
 
